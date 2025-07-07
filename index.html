@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kobe Brummitt | Offensive Security & Engineering</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mea+Culpa&family=Fira+Code:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        /* --- CUSTOM FONT SETUP --- */
+        /* --- UNCOMMENT THIS RULE AFTER PLACING YOUR FONT FILE IN A 'fonts' FOLDER --- */
+        /*
+        @font-face {
+            font-family: 'Blank Script';
+            src: url('fonts/Blank Script.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        */
+
+        :root {
+            --background-color: #0a0a0a;
+            --primary-text-color: #d4d4d4;
+            --secondary-text-color: #888888;
+            --border-color: #2a2a2a;
+            --card-color: #111111;
+            
+            --accent-hue: 207;
+            --accent-saturation: 98%;
+            --accent-lightness: 58%;
+            --accent-color: hsl(var(--accent-hue), var(--accent-saturation), var(--accent-lightness));
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--primary-text-color);
+            line-height: 1.7;
+            position: relative;
+        }
+        
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVuZmaDg4OGhoaFhYWDg4N5eXdeXl3o6Ojg4ODs7Oze3t7a2trk5OTb29vQ0NDV1dWNjY2WlpZ/f39WVlZHR0d6enpCAY9aAAAARklEQVRIx4XUTQEAMAwDAbsoM/y/hW+g1rCKAlM0MvveM8AYWMjJ8j5DDpE/L2dE0So9J5McyH2f6U2+sW0Ld4g/yZuS6Bk2zt0P3sA3wOAcMvPLhGkAAAAASUVORK5CYII=');
+            opacity: 0.04;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 1.5rem;
+        }
+
+        .left-column {
+            grid-column: span 12;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+        }
+
+        .header-content h1 {
+            font-family: 'Blank Script', 'Mea Culpa', cursive;
+            font-size: clamp(4rem, 12vw, 6rem);
+            font-weight: 400;
+            color: var(--primary-text-color);
+            text-shadow: 0 0 15px hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.2);
+            line-height: 1;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .header-content .hacker-quote {
+            font-family: 'Fira Code', monospace;
+            color: var(--secondary-text-color);
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .hacker-quote .highlight { color: var(--accent-color); font-weight: 500; }
+        .planet-icon {
+            font-size: 1.5em;
+            line-height: 1;
+            display: inline-block;
+            animation: spin 10s linear infinite;
+        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .nav__list { list-style: none; margin: 3rem 0; }
+        .nav__item { margin: 1rem 0; }
+        .nav__link { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--secondary-text-color); font-weight: 500; transition: color 0.3s ease; }
+        .nav__link.active { color: var(--primary-text-color); }
+        .nav__link.active .line { width: 4rem; background-color: var(--accent-color); }
+        .nav__link .line { width: 2rem; height: 1px; background-color: var(--secondary-text-color); transition: all 0.3s ease; }
+        .nav__link:hover .line { width: 4rem; }
+        .nav__link:hover { color: var(--primary-text-color); }
+
+        .social-links { display: flex; gap: 1.5rem; }
+        .social-links a { font-size: 1.5rem; color: var(--secondary-text-color); transition: color 0.3s ease; }
+        .social-links a:hover { color: var(--accent-color); }
+
+        .right-column { grid-column: span 12; padding-top: 2rem; }
+        section { margin-bottom: 4rem; }
+        .section-title { font-size: 1.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); margin-bottom: 2rem; }
+
+        #about p { color: var(--secondary-text-color); font-size: 1.1rem; margin-bottom: 1rem; }
+        .about-highlights { margin-top: 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; }
+        .about-highlights ul { list-style: none; }
+        .about-highlights li { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; color: var(--secondary-text-color); }
+        .about-highlights li:last-child { margin-bottom: 0; }
+        .about-highlights i { font-size: 1.5rem; color: var(--accent-color); }
+        
+        .experience-item { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-color); }
+        .experience-item:last-child { border-bottom: none; }
+        .exp-date { font-family: 'Fira Code', monospace; color: var(--secondary-text-color); }
+        .exp-title { font-size: 1.2rem; font-weight: 500; color: var(--primary-text-color); }
+        .exp-company { color: var(--accent-color); font-weight: 500; }
+        .exp-description { color: var(--secondary-text-color); margin-top: 0.5rem; }
+        .exp-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+        .tag { background-color: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.1); color: var(--accent-color); padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500; }
+
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .skill-category h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        .skill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .skill-item { background-color: var(--card-color); color: var(--secondary-text-color); padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.9rem; }
+
+        .certifications-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .cert-item { display: flex; align-items: center; gap: 0.5rem; background-color: var(--card-color); border: 1px solid var(--border-color); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; color: var(--secondary-text-color); }
+        .cert-item i { color: var(--accent-color); font-size: 1.2rem; }
+
+        .project-card { background-color: var(--card-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; transition: border-color 0.3s ease, transform 0.3s ease; }
+        .project-card:hover { border-color: var(--accent-color); transform: translateY(-5px); }
+        .project-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .project-title i { color: var(--accent-color); vertical-align: middle; margin-right: 0.5rem; }
+        .project-description { color: var(--secondary-text-color); }
+
+        .hue-slider-container { position: fixed; bottom: 0; left: 0; width: 100%; padding: 1rem; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; gap: 1rem; z-index: 1000; }
+        .hue-slider-container label { font-family: 'Fira Code', monospace; font-size: 0.9rem; color: var(--secondary-text-color); }
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 150px; height: 4px; background: var(--border-color); border-radius: 5px; cursor: pointer; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; background: var(--primary-text-color); border-radius: 50%; border: 2px solid var(--accent-color); }
+        input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; background: var(--primary-text-color); border-radius: 50%; border: 2px solid var(--accent-color); }
+        
+        .game-canvas { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9998; background-color: #000; }
+        .game-overlay { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-family: 'Fira Code', monospace; z-index: 9999; }
+        #matrix-canvas { z-index: 9999; }
+        .site-footer { text-align: center; padding: 2rem 0; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: var(--background-color); user-select: none; }
+        .site-footer:hover { color: var(--secondary-text-color); }
+
+        @media (min-width: 992px) {
+            .left-column { grid-column: span 5; position: sticky; top: 0; height: 100vh; padding: 4rem 0; }
+            .right-column { grid-column: span 7; padding-top: 4rem; }
+            .experience-item { grid-template-columns: 1fr 3fr; }
+            .section-title { position: sticky; top: 0; background-color: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); padding: 1rem 0; z-index: 10; }
+            .hue-slider-container { justify-content: flex-end; }
+        }
+        
+        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
+        .fade-in.is-visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="left-column">
+            <div class="header-content">
+                <h1 id="main-headline">Kobe Brummitt</h1>
+                <p class="hacker-quote">
+                    Hack The <span class="highlight">Planet</span>
+                    <svg class="planet-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                </p>
+            </div>
+
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="#about" class="nav__link active"><span class="line"></span><span>ABOUT</span></a></li>
+                    <li class="nav__item"><a href="#experience" class="nav__link"><span class="line"></span><span>EXPERIENCE</span></a></li>
+                    <li class="nav__item"><a href="#skills" class="nav__link"><span class="line"></span><span>SKILLS</span></a></li>
+                    <li class="nav__item"><a href="#projects" class="nav__link"><span class="line"></span><span>PROJECTS</span></a></li>
+                </ul>
+            </nav>
+
+            <div class="social-links">
+                <a href="mailto:kbrummitt@spidersecurity.io" title="Email"><i class='bx bx-envelope'></i></a>
+            </div>
+        </header>
+
+        <main class="right-column">
+            
+            <section id="about" class="fade-in">
+                <h3 class="section-title">About</h3>
+                <p>
+                   My approach to security is rooted in a simple principle: you cannot defend what you do not fundamentally understand. For me, that understanding comes from deconstructing systems—exploring their limits, identifying their flaws, and tracing the paths an adversary would take. It’s a curiosity that started with hacking school systems for fun and quickly evolved into a competitive and professional obsession.
+                </p>
+                <p>
+                    This offensive-first mindset is my strategic advantage. It's how I became the youngest Head of Cybersecurity in a county's history just a year after graduating. It's the foundation upon which I architected a proprietary AI-driven threat platform, and it is the core philosophy of my own offensive security firm, <strong>Spider Security</strong>.
+                </p>
+                <div class="about-highlights">
+                    <ul>
+                        <li><i class='bx bxs-zap'></i><span>Youngest Head of Cybersecurity in county history.</span></li>
+                        <li><i class='bx bxs-trophy'></i><span>Placed Top 10 Globally in SECARMYCTF competition.</span></li>
+                        <li><i class='bx bx-dollar-circle'></i><span>Generated over $5M in revenue from 25 e-commerce ventures.</span></li>
+                        <li><i class='bx bxs-shield-x'></i><span>Neutralized a major ransomware attack in under 1 hour.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="experience" class="fade-in">
+                <h3 class="section-title">Experience</h3>
+                <div class="experience-item">
+                    <div class="exp-date">JUNE 2025 — PRESENT</div>
+                    <div class="exp-content">
+                        <h4 class="exp-title">Founder & Principal Security Consultant</h4>
+                        <h5 class="exp-company">Spider Security</h5>
+                        <p class="exp-description">
+                           Launched my own offensive security consultancy to provide specialized red and blue team services, including penetration testing and vulnerability assessments. We help organizations identify and remediate critical weaknesses before adversaries can exploit them.
+                        </p>
+                        <div class="exp-tags">
+                            <span class="tag">Founder</span>
+                            <span class="tag">Red Teaming</span>
+                            <span class="tag">Blue Teaming</span>
+                            <span class="tag">Security Audits</span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="experience-item">
+                    <div class="exp-date">JAN 2025 — PRESENT</div>
+                    <div class="exp-content">
+                        <h4 class="exp-title">Cybersecurity Engineer</h4>
+                        <h5 class="exp-company">Confidential</h5>
+                        <p class="exp-description">
+                            Recruited to architect and develop a proprietary, in-house threat intelligence platform. As the sole developer, I built a unified SIEM/XDR/NDR solution from the ground up, integrating AI to provide actionable insights and reduce alert fatigue for security teams.
+                        </p>
+                        <div class="exp-tags">
+                            <span class="tag">SIEM/XDR Architecture</span>
+                            <span class="tag">AI/ML</span>
+                            <span class="tag">Python</span>
+                            <span class="tag">Platform Development</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="experience-item">
+                    <div class="exp-date">2022 — 2024</div>
+                    <div class="exp-content">
+                        <h4 class="exp-title">Head of Cybersecurity</h4>
+                        <h5 class="exp-company">Hawkins County Board of Education</h5>
+                        <p class="exp-description">
+                            Promoted from a technician role to lead the entire cybersecurity program for the county. Managed all compliance, blue team defense, and red team engagements. Led the response to a major ransomware attack, recovering over 1,500 mailboxes and preventing catastrophic data loss. Deployed and managed a county-wide Wazuh SIEM and trained thousands of users through over 100,000 simulated phishing emails.
+                        </p>
+                        <div class="exp-tags">
+                            <span class="tag">Incident Response</span>
+                            <span class="tag">Red Teaming</span>
+                            <span class="tag">SIEM Management</span>
+                            <span class="tag">User Training</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="skills" class="fade-in">
+                <h3 class="section-title">Technical Skills</h3>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h4>Offensive Security</h4>
+                        <div class="skill-list">
+                            <span class="skill-item">Penetration Testing</span>
+                            <span class="skill-item">Red Teaming</span>
+                            <span class="skill-item">Exploit Development</span>
+                            <span class="skill-item">Social Engineering</span>
+                            <span class="skill-item">Bug Bounties</span>
+                            <span class="skill-item">Security Bypass</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>Defensive & Architecture</h4>
+                        <div class="skill-list">
+                            <span class="skill-item">SIEM/XDR/NDR Development</span>
+                            <span class="skill-item">Incident Response</span>
+                            <span class="skill-item">Digital Forensics</span>
+                            <span class="skill-item">AI in Threat Detection</span>
+                            <span class="skill-item">Blue Teaming</span>
+                            <span class="skill-item">Network Engineering</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>Tools & Technologies</h4>
+                        <div class="skill-list">
+                            <span class="skill-item">Python</span>
+                            <span class="skill-item">Metasploit</span>
+                            <span class="skill-item">Burp Suite</span>
+                            <span class="skill-item">Cobalt Strike</span>
+                            <span class="skill-item">Nmap</span>
+                            <span class="skill-item">Wireshark</span>
+                        </div>
+                    </div>
+                     <div class="skill-category">
+                        <h4>Emerging & Financial Tech</h4>
+                        <div class="skill-list">
+                            <span class="skill-item">Blockchain & NFT Security</span>
+                            <span class="skill-item">Forex Trading & Analysis</span>
+                            <span class="skill-item">E-commerce Platforms</span>
+                            <span class="skill-item">Product Development</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="certifications" class="fade-in">
+                <h3 class="section-title">Certifications</h3>
+                <div class="certifications-grid">
+                    <div class="cert-item"><i class='bx bxs-certification'></i> CompTIA A+</div>
+                    <div class="cert-item"><i class='bx bxs-certification'></i> CompTIA Network+</div>
+                    <div class="cert-item"><i class='bx bxs-certification'></i> CompTIA Security+</div>
+                    <div class="cert-item"><i class='bx bxs-certification'></i> CompTIA PenTest+</div>
+                    <div class="cert-item"><i class='bx bxs-certification'></i> CompTIA CySA+</div>
+                    <div class="cert-item"><i class='bx bxs-certification'></i> Certified Ethical Hacker (CEH)</div>
+                    <div class="cert-item"><i class='bx bxs-bar-chart-alt-2'></i> Certified Forex Trader</div>
+                </div>
+            </section>
+
+            <section id="projects" class="fade-in">
+                <h3 class="section-title">Ventures & Accolades</h3>
+                 <div class="project-card">
+                    <h4 class="project-title"><i class='bx bxs-bug'></i>Bug Bounty Hunter</h4>
+                    <p class="project-description">Active participant in private bug bounty programs, credited with discovering and responsibly disclosing critical vulnerabilities in commercial software, including remote code execution and privilege escalation flaws.</p>
+                </div>
+                 <div class="project-card">
+                    <h4 class="project-title"><i class='bx bx-block'></i>Security Bypass Research</h4>
+                    <p class="project-description">Conducted independent research into bypassing remote proctoring and anti-cheat software, identifying logical flaws and circumvention techniques to help developers build more robust systems.</p>
+                </div>
+                <div class="project-card">
+                    <h4 class="project-title"><i class='bx bx-laptop'></i>Autonomous AI Security Platform</h4>
+                    <p class="project-description">Architected an AI-driven SIEM/XDR/NDR that operates autonomously, outperforming traditional 24/7 Security Operations Centers (SOCs) in threat detection speed and accuracy.</p>
+                </div>
+                <div class="project-card">
+                    <h4 class="project-title"><i class='bx bx-hdd'></i>In-House VPN Tunneling Device</h4>
+                    <p class="project-description">Engineered and deployed a custom, hardware-based VPN tunneling solution from scratch to ensure secure, encrypted, and low-latency communication for distributed network environments.</p>
+                </div>
+                <div class="project-card">
+                    <h4 class="project-title"><i class='bx bx-dollar-circle'></i>E-commerce Entrepreneur</h4>
+                    <p class="project-description">Built and scaled a portfolio of 25 independent e-commerce businesses, generating over $5 Million in gross revenue through strategic marketing, automation, and supply chain optimization.</p>
+                </div>
+                <div class="project-card">
+                    <h4 class="project-title"><i class='bx bx-trophy'></i>Global CTF Competitor</h4>
+                    <p class="project-description">Placed in the Top 10 globally in the SECARMYCTF as a key member of team "DarkArmy" (18/04/2019), competing against thousands of participants in a high-pressure, time-sensitive environment.</p>
+                </div>
+                <div class="project-card">
+                    <h4 class="project-title"><i class='bx bxs-graduation'></i>JROTC CyberPatriot Mentor</h4>
+                    <p class="project-description">Coached and mentored the JROTC team "Linux Losers," guiding them to a Silver Tier placement in the prestigious national CyberPatriot competition, fostering the next generation of cybersecurity talent.</p>
+                </div>
+            </section>
+        </main>
+        <footer class="site-footer">
+            [init_6.2.1-b_secure_shell]
+        </footer>
+    </div>
+    
+    <canvas id="matrix-canvas" class="game-canvas"></canvas>
+    <canvas id="game-canvas" class="game-canvas"></canvas>
+    <div id="game-overlay" class="game-overlay">Use Arrow Keys & Spacebar | Press ESC to Exit</div>
+
+    <div class="hue-slider-container">
+        <label for="hue-slider">/HUE_CONTROL</label>
+        <input type="range" id="hue-slider" min="0" max="360" value="207">
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- EASTER EGG: CONSOLE MESSAGE ---
+        const asciiSpider="             /\\            ( /   @ @    \\ )             \\  _\\_/_  /             /\\ \\ ' / /\\            /  \\     /  \\                \\   /                 '.'        ";console.log(`%c${asciiSpider}`,'color: hsl(var(--accent-hue, 207), 98%, 58%');console.log("%c[Connection Established] Welcome.","color: hsl(var(--accent-hue, 207), 98%, 58%); font-size: 12px;");console.log("%cTry help() for a list of commands.","color: #888888; font-style: italic;");
+        
+        // --- ASTEROIDS EASTER EGG ---
+        const headline=document.getElementById('main-headline');let clickCount=0;let lastClick=0;
+        headline.addEventListener('click',()=>{const now=Date.now();if(now-lastClick>1000){clickCount=0;}
+        lastClick=now;clickCount++;if(clickCount>=10){startGame();clickCount=0;}});
+        const gameCanvas=document.getElementById('game-canvas');const gameCtx=gameCanvas.getContext('2d');const gameOverlay=document.getElementById('game-overlay');let gameLoop;
+        const keys={up:false,left:false,right:false,space:false};
+        let player,bullets,asteroids,score,lives;
+        function startGame(){gameCanvas.style.display='block';gameOverlay.style.display='block';gameCanvas.width=window.innerWidth;gameCanvas.height=window.innerHeight;player={x:gameCanvas.width/2,y:gameCanvas.height/2,r:15,a:90/180*Math.PI,rot:0,thrusting:false,thrust:{x:0,y:0},canShoot:true};bullets=[];asteroids=[];score=0;lives=3;for(let i=0;i<5;i++){asteroids.push(newAsteroid());}
+        document.addEventListener('keydown',handleKeyDown);document.addEventListener('keyup',handleKeyUp);gameLoop=requestAnimationFrame(update);}
+        function stopGame(){gameCanvas.style.display='none';gameOverlay.style.display='none';cancelAnimationFrame(gameLoop);document.removeEventListener('keydown',handleKeyDown);document.removeEventListener('keyup',handleKeyUp);}
+        function handleKeyDown(e){switch(e.key){case' ':keys.space=true;break;case'ArrowUp':keys.up=true;break;case'ArrowLeft':keys.left=true;break;case'ArrowRight':keys.right=true;break;case'Escape':stopGame();break;}}
+        function handleKeyUp(e){switch(e.key){case' ':keys.space=false;break;case'ArrowUp':keys.up=false;break;case'ArrowLeft':keys.left=false;break;case'ArrowRight':keys.right=false;break;}}
+        function newAsteroid(x,y,r){const level=0.2;const rad=r?r:Math.random()*20+20;return{x:x?x:Math.floor(Math.random()*gameCanvas.width),y:y?y:Math.floor(Math.random()*gameCanvas.height),r:rad,a:Math.random()*Math.PI*2,vert:Math.floor(Math.random()*7+5),offs:[]};}
+        function shoot(){if(player.canShoot&&bullets.length<10){bullets.push({x:player.x+4/3*player.r*Math.cos(player.a),y:player.y-4/3*player.r*Math.sin(player.a),xv:5*Math.cos(player.a),yv:-5*Math.sin(player.a),dist:0});player.canShoot=false;setTimeout(()=>{player.canShoot=true;},250);}}
+        function update(){player.thrusting=keys.up;if(keys.space&&player.canShoot){shoot();}
+        if(player.thrusting){player.thrust.x+=0.1*Math.cos(player.a);player.thrust.y-=0.1*Math.sin(player.a);}else{player.thrust.x-=0.05*player.thrust.x;player.thrust.y-=0.05*player.thrust.y;}
+        player.rot=keys.left?-0.1:keys.right?0.1:0;player.a+=player.rot;player.x+=player.thrust.x;player.y+=player.thrust.y;
+        if(player.x<0-player.r){player.x=gameCanvas.width+player.r;}else if(player.x>gameCanvas.width+player.r){player.x=0-player.r;}
+        if(player.y<0-player.r){player.y=gameCanvas.height+player.r;}else if(player.y>gameCanvas.height+player.r){player.y=0-player.r;}
+        gameCtx.clearRect(0,0,gameCanvas.width,gameCanvas.height);gameCtx.strokeStyle='white';gameCtx.lineWidth=2;
+        gameCtx.beginPath();gameCtx.moveTo(player.x+player.r*Math.cos(player.a),player.y-player.r*Math.sin(player.a));
+        gameCtx.lineTo(player.x-player.r*(Math.cos(player.a)+Math.sin(player.a)),player.y+player.r*(Math.sin(player.a)-Math.cos(player.a)));
+        gameCtx.lineTo(player.x-player.r*(Math.cos(player.a)-Math.sin(player.a)),player.y+player.r*(Math.sin(player.a)+Math.cos(player.a)));
+        gameCtx.closePath();gameCtx.stroke();
+        for(let i=bullets.length-1;i>=0;i--){bullets[i].x+=bullets[i].xv;bullets[i].y+=bullets[i].yv;bullets[i].dist+=Math.sqrt(Math.pow(bullets[i].xv,2)+Math.pow(bullets[i].yv,2));if(bullets[i].dist>gameCanvas.width/2){bullets.splice(i,1);continue;}
+        gameCtx.fillStyle='white';gameCtx.beginPath();gameCtx.arc(bullets[i].x,bullets[i].y,2,0,Math.PI*2,false);gameCtx.fill();}
+        for(let i=asteroids.length-1;i>=0;i--){asteroids[i].x+=1;asteroids[i].y+=1;if(asteroids[i].x>gameCanvas.width+asteroids[i].r){asteroids[i].x=0-asteroids[i].r;}if(asteroids[i].y>gameCanvas.height+asteroids[i].r){asteroids[i].y=0-asteroids[i].r;}
+        for(let j=bullets.length-1;j>=0;j--){if(Math.hypot(bullets[j].x-asteroids[i].x,bullets[j].y-asteroids[i].y)<asteroids[i].r){asteroids.splice(i,1);bullets.splice(j,1);score+=100;break;}}
+        gameCtx.beginPath();gameCtx.arc(asteroids[i].x,asteroids[i].y,asteroids[i].r,0,Math.PI*2,false);gameCtx.stroke();}
+        gameCtx.fillStyle='white';gameCtx.font='20px Fira Code';gameCtx.fillText('Score: '+score,20,30);
+        gameLoop=requestAnimationFrame(update);}
+
+        // --- OTHER EASTER EGGS (Console, Matrix, Konami) ---
+        const matrixCanvas=document.getElementById('matrix-canvas');const matrixCtx=matrixCanvas.getContext('2d');let matrixInterval;const matrixEffect=()=>{if(matrixInterval)clearInterval(matrixInterval);matrixCanvas.style.display='block';matrixCanvas.width=window.innerWidth;matrixCanvas.height=window.innerHeight;const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}'.split('');const fontSize=14;const columns=matrixCanvas.width/fontSize;const drops=Array(Math.floor(columns)).fill(1);const accentHue=getComputedStyle(document.documentElement).getPropertyValue('--accent-hue');const draw=()=>{matrixCtx.fillStyle='rgba(0, 0, 0, 0.05)';matrixCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);matrixCtx.fillStyle=`hsl(${accentHue}, 98%, 58%)`;matrixCtx.font=`${fontSize}px monospace`;for(let i=0;i<drops.length;i++){const text=letters[Math.floor(Math.random()*letters.length)];matrixCtx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>matrixCanvas.height&&Math.random()>0.975){drops[i]=0;}
+        drops[i]++;}};matrixInterval=setInterval(draw,33);const stopEffect=()=>{matrixCanvas.style.display='none';clearInterval(matrixInterval);document.removeEventListener('keydown',stopEffect);document.removeEventListener('click',stopEffect);};setTimeout(()=>{document.addEventListener('keydown',stopEffect);document.addEventListener('click',stopEffect);},500);};
+        window.help=()=>{console.table({'skills()':'Lists core competencies.','contact()':'Displays my business email.','matrix()':'Initialize visual overlay.','clear()':'Clears the console.'});return"[Available Commands]";};window.skills=()=>{console.log('Offensive Security, Platform Architecture, Incident Response, Entrepreneurship');return"[OK]";};window.contact=()=>{console.log('kbrummitt@spidersecurity.io');return"[OK]";};window.matrix=()=>{console.log('Initializing matrix overlay... Press any key or click to dismiss.');matrixEffect();return'[SUCCESS]';};
+        const konamiCode=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let konamiIndex=0;document.addEventListener('keydown',(e)=>{if(e.key.toLowerCase()===konamiCode[konamiIndex].toLowerCase()){konamiIndex++;if(konamiIndex===konamiCode.length){window.matrix();konamiIndex=0;}}else{konamiIndex=0;}});
+        
+        // --- HUE SLIDER / COLOR CHANGER ---
+        const hueSlider=document.getElementById('hue-slider');hueSlider.addEventListener('input',(e)=>document.documentElement.style.setProperty('--accent-hue',e.target.value));
+        
+        // --- SCROLL-IN ANIMATION ---
+        const fadeObserver=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(entry.isIntersecting)entry.target.classList.add('is-visible');});},{threshold:0.1});document.querySelectorAll('.fade-in').forEach((el)=>fadeObserver.observe(el));
+        
+        // --- ACTIVE NAV LINK HIGHLIGHTING ---
+        const sections=document.querySelectorAll('main section');const navLinks=document.querySelectorAll('.nav__link');const navObserver=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){const currentId=entry.target.id;navLinks.forEach(link=>link.classList.toggle('active',link.getAttribute('href').substring(1)===currentId));}});},{rootMargin:'-40% 0px -60% 0px'});sections.forEach(section=>navObserver.observe(section));
+    });
+    </script>
+</body>
+</html>
