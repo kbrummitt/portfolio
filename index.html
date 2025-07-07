@@ -11,13 +11,13 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <style>
-        /* This is where you would place the @font-face rule for 'Blank Script' */
-        /*
+        /* This rule now points to the more reliable .woff2 file format. */
         @font-face {
             font-family: 'Blank Script';
-            src: url('fonts/Blank-Script.otf') format('opentype');
+            src: url('fonts/Blank-Script.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
         }
-        */
 
         :root {
             --background-color: #0a0a0a;
@@ -439,8 +439,8 @@
         gameLoop=requestAnimationFrame(update);}
 
         // --- MOBILE SHAKE-TO-TRIGGER MATRIX ---
-        if(isTouchDevice&&window.DeviceMotionEvent){let lastShake=0;let shakeThreshold=15;
-        window.addEventListener('devicemotion',e=>{const now=Date.now();if(now-lastShake>5000){const accel=e.accelerationIncludingGravity;const magnitude=Math.sqrt(accel.x*accel.x+accel.y*accel.y+accel.z*accel.z);
+        if(isTouchDevice&&window.DeviceMotionEvent){let lastShake=0;let shakeThreshold=20;
+        window.addEventListener('devicemotion',e=>{const now=Date.now();if(now-lastShake>5000){const accel=e.accelerationIncludingGravity;if(!accel.x){return;}const magnitude=Math.sqrt(accel.x*accel.x+accel.y*accel.y+accel.z*accel.z);
         if(magnitude>shakeThreshold){window.matrix();lastShake=now;}}});}
 
         // --- OTHER EASTER EGGS (Console, Konami) ---
