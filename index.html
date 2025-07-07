@@ -11,14 +11,11 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <style>
-        /* --- CUSTOM FONT SETUP --- */
-        /* --- UNCOMMENT THIS RULE AFTER PLACING YOUR FONT FILE IN A 'fonts' FOLDER --- */
+        /* This is where you would place the @font-face rule for 'Blank Script' */
         /*
         @font-face {
             font-family: 'Blank Script';
-            src: url('fonts/Blank Script.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
+            src: url('fonts/Blank-Script.otf') format('opentype');
         }
         */
 
@@ -161,7 +158,11 @@
         input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; background: var(--primary-text-color); border-radius: 50%; border: 2px solid var(--accent-color); }
         
         .game-canvas { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9998; background-color: #000; }
-        .game-overlay { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-family: 'Fira Code', monospace; z-index: 9999; }
+        .game-overlay { display: none; position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-family: 'Fira Code', monospace; z-index: 9999; cursor: pointer; }
+        .touch-controls { display: none; position: fixed; bottom: 20px; width: 100%; justify-content: space-between; align-items: center; z-index: 9999; padding: 0 20px; }
+        .touch-dpad, .touch-buttons { display: flex; gap: 15px; }
+        .touch-btn { width: 50px; height: 50px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: white; user-select: none; }
+        
         #matrix-canvas { z-index: 9999; }
         .site-footer { text-align: center; padding: 2rem 0; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: var(--background-color); user-select: none; }
         .site-footer:hover { color: var(--secondary-text-color); }
@@ -186,7 +187,7 @@
                 <h1 id="main-headline">Kobe Brummitt</h1>
                 <p class="hacker-quote">
                     Hack The <span class="highlight">Planet</span>
-                    <svg class="planet-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <i class='bx bxs-globe planet-icon'></i>
                 </p>
             </div>
 
@@ -377,6 +378,17 @@
     <canvas id="matrix-canvas" class="game-canvas"></canvas>
     <canvas id="game-canvas" class="game-canvas"></canvas>
     <div id="game-overlay" class="game-overlay">Use Arrow Keys & Spacebar | Press ESC to Exit</div>
+    <div id="touch-controls" class="touch-controls">
+        <div class="touch-dpad">
+            <div class="touch-btn" id="touch-left"><i class='bx bx-left-arrow-alt'></i></div>
+            <div class="touch-btn" id="touch-right"><i class='bx bx-right-arrow-alt'></i></div>
+        </div>
+        <div class="touch-buttons">
+            <div class="touch-btn" id="touch-thrust"><i class='bx bx-up-arrow-alt'></i></div>
+            <div class="touch-btn" id="touch-fire"><i class='bx bxs-zap'></i></div>
+        </div>
+    </div>
+
 
     <div class="hue-slider-container">
         <label for="hue-slider">/HUE_CONTROL</label>
@@ -393,35 +405,45 @@
         const headline=document.getElementById('main-headline');let clickCount=0;let lastClick=0;
         headline.addEventListener('click',()=>{const now=Date.now();if(now-lastClick>1000){clickCount=0;}
         lastClick=now;clickCount++;if(clickCount>=10){startGame();clickCount=0;}});
-        const gameCanvas=document.getElementById('game-canvas');const gameCtx=gameCanvas.getContext('2d');const gameOverlay=document.getElementById('game-overlay');let gameLoop;
+        const gameCanvas=document.getElementById('game-canvas');const gameCtx=gameCanvas.getContext('2d');const gameOverlay=document.getElementById('game-overlay');const touchControls=document.getElementById('touch-controls');let gameLoop;
         const keys={up:false,left:false,right:false,space:false};
-        let player,bullets,asteroids,score,lives;
-        function startGame(){gameCanvas.style.display='block';gameOverlay.style.display='block';gameCanvas.width=window.innerWidth;gameCanvas.height=window.innerHeight;player={x:gameCanvas.width/2,y:gameCanvas.height/2,r:15,a:90/180*Math.PI,rot:0,thrusting:false,thrust:{x:0,y:0},canShoot:true};bullets=[];asteroids=[];score=0;lives=3;for(let i=0;i<5;i++){asteroids.push(newAsteroid());}
-        document.addEventListener('keydown',handleKeyDown);document.addEventListener('keyup',handleKeyUp);gameLoop=requestAnimationFrame(update);}
-        function stopGame(){gameCanvas.style.display='none';gameOverlay.style.display='none';cancelAnimationFrame(gameLoop);document.removeEventListener('keydown',handleKeyDown);document.removeEventListener('keyup',handleKeyUp);}
+        let player,bullets,asteroids,score,lives;const isTouchDevice='ontouchstart'in window||navigator.maxTouchPoints>0;
+        function startGame(){gameCanvas.style.display='block';gameOverlay.style.display='block';if(isTouchDevice){touchControls.style.display='flex';}
+        gameCanvas.width=window.innerWidth;gameCanvas.height=window.innerHeight;player={x:gameCanvas.width/2,y:gameCanvas.height/2,r:15,a:90/180*Math.PI,rot:0,thrusting:false,thrust:{x:0,y:0},canShoot:true};bullets=[];asteroids=[];score=0;lives=3;for(let i=0;i<5;i++){asteroids.push(newAsteroid());}
+        document.addEventListener('keydown',handleKeyDown);document.addEventListener('keyup',handleKeyUp);if(isTouchDevice){addTouchListeners();}
+        gameOverlay.addEventListener('click',stopGame);gameLoop=requestAnimationFrame(update);}
+        function stopGame(){gameCanvas.style.display='none';gameOverlay.style.display='none';touchControls.style.display='none';cancelAnimationFrame(gameLoop);document.removeEventListener('keydown',handleKeyDown);document.removeEventListener('keyup',handleKeyUp);if(isTouchDevice){removeTouchListeners();}}
         function handleKeyDown(e){switch(e.key){case' ':keys.space=true;break;case'ArrowUp':keys.up=true;break;case'ArrowLeft':keys.left=true;break;case'ArrowRight':keys.right=true;break;case'Escape':stopGame();break;}}
         function handleKeyUp(e){switch(e.key){case' ':keys.space=false;break;case'ArrowUp':keys.up=false;break;case'ArrowLeft':keys.left=false;break;case'ArrowRight':keys.right=false;break;}}
-        function newAsteroid(x,y,r){const level=0.2;const rad=r?r:Math.random()*20+20;return{x:x?x:Math.floor(Math.random()*gameCanvas.width),y:y?y:Math.floor(Math.random()*gameCanvas.height),r:rad,a:Math.random()*Math.PI*2,vert:Math.floor(Math.random()*7+5),offs:[]};}
-        function shoot(){if(player.canShoot&&bullets.length<10){bullets.push({x:player.x+4/3*player.r*Math.cos(player.a),y:player.y-4/3*player.r*Math.sin(player.a),xv:5*Math.cos(player.a),yv:-5*Math.sin(player.a),dist:0});player.canShoot=false;setTimeout(()=>{player.canShoot=true;},250);}}
-        function update(){player.thrusting=keys.up;if(keys.space&&player.canShoot){shoot();}
-        if(player.thrusting){player.thrust.x+=0.1*Math.cos(player.a);player.thrust.y-=0.1*Math.sin(player.a);}else{player.thrust.x-=0.05*player.thrust.x;player.thrust.y-=0.05*player.thrust.y;}
-        player.rot=keys.left?-0.1:keys.right?0.1:0;player.a+=player.rot;player.x+=player.thrust.x;player.y+=player.thrust.y;
+        function addTouchListeners(){document.getElementById('touch-left').addEventListener('touchstart',e=>{e.preventDefault();keys.left=true;});document.getElementById('touch-left').addEventListener('touchend',e=>{e.preventDefault();keys.left=false;});document.getElementById('touch-right').addEventListener('touchstart',e=>{e.preventDefault();keys.right=true;});document.getElementById('touch-right').addEventListener('touchend',e=>{e.preventDefault();keys.right=false;});document.getElementById('touch-thrust').addEventListener('touchstart',e=>{e.preventDefault();keys.up=true;});document.getElementById('touch-thrust').addEventListener('touchend',e=>{e.preventDefault();keys.up=false;});document.getElementById('touch-fire').addEventListener('touchstart',e=>{e.preventDefault();keys.space=true;});document.getElementById('touch-fire').addEventListener('touchend',e=>{e.preventDefault();keys.space=false;});}
+        function removeTouchListeners(){}
+        function newAsteroid(x,y,r){const rad=r?r:Math.random()*20+20;return{x:x?x:Math.floor(Math.random()*gameCanvas.width),y:y?y:Math.floor(Math.random()*gameCanvas.height),r:rad,xv:Math.random()*2-1,yv:Math.random()*2-1,a:Math.random()*Math.PI*2,vert:Math.floor(Math.random()*7+5)};}
+        function shoot(){if(player.canShoot&&bullets.length<5){bullets.push({x:player.x+4/3*player.r*Math.cos(player.a),y:player.y-4/3*player.r*Math.sin(player.a),xv:8*Math.cos(player.a),yv:-8*Math.sin(player.a)});player.canShoot=false;setTimeout(()=>{player.canShoot=true;},150);}}
+        function update(){player.thrusting=keys.up;if(keys.space){shoot();}
+        if(player.thrusting){player.thrust.x+=0.1*Math.cos(player.a);player.thrust.y-=0.1*Math.sin(player.a);}else{player.thrust.x-=0.02*player.thrust.x;player.thrust.y-=0.02*player.thrust.y;}
+        player.rot=keys.left?-0.08:keys.right?0.08:0;player.a+=player.rot;player.x+=player.thrust.x;player.y+=player.thrust.y;
         if(player.x<0-player.r){player.x=gameCanvas.width+player.r;}else if(player.x>gameCanvas.width+player.r){player.x=0-player.r;}
         if(player.y<0-player.r){player.y=gameCanvas.height+player.r;}else if(player.y>gameCanvas.height+player.r){player.y=0-player.r;}
-        gameCtx.clearRect(0,0,gameCanvas.width,gameCanvas.height);gameCtx.strokeStyle='white';gameCtx.lineWidth=2;
+        gameCtx.fillStyle='#000';gameCtx.fillRect(0,0,gameCanvas.width,gameCanvas.height);gameCtx.strokeStyle='white';gameCtx.lineWidth=2;
         gameCtx.beginPath();gameCtx.moveTo(player.x+player.r*Math.cos(player.a),player.y-player.r*Math.sin(player.a));
         gameCtx.lineTo(player.x-player.r*(Math.cos(player.a)+Math.sin(player.a)),player.y+player.r*(Math.sin(player.a)-Math.cos(player.a)));
         gameCtx.lineTo(player.x-player.r*(Math.cos(player.a)-Math.sin(player.a)),player.y+player.r*(Math.sin(player.a)+Math.cos(player.a)));
         gameCtx.closePath();gameCtx.stroke();
-        for(let i=bullets.length-1;i>=0;i--){bullets[i].x+=bullets[i].xv;bullets[i].y+=bullets[i].yv;bullets[i].dist+=Math.sqrt(Math.pow(bullets[i].xv,2)+Math.pow(bullets[i].yv,2));if(bullets[i].dist>gameCanvas.width/2){bullets.splice(i,1);continue;}
-        gameCtx.fillStyle='white';gameCtx.beginPath();gameCtx.arc(bullets[i].x,bullets[i].y,2,0,Math.PI*2,false);gameCtx.fill();}
-        for(let i=asteroids.length-1;i>=0;i--){asteroids[i].x+=1;asteroids[i].y+=1;if(asteroids[i].x>gameCanvas.width+asteroids[i].r){asteroids[i].x=0-asteroids[i].r;}if(asteroids[i].y>gameCanvas.height+asteroids[i].r){asteroids[i].y=0-asteroids[i].r;}
-        for(let j=bullets.length-1;j>=0;j--){if(Math.hypot(bullets[j].x-asteroids[i].x,bullets[j].y-asteroids[i].y)<asteroids[i].r){asteroids.splice(i,1);bullets.splice(j,1);score+=100;break;}}
-        gameCtx.beginPath();gameCtx.arc(asteroids[i].x,asteroids[i].y,asteroids[i].r,0,Math.PI*2,false);gameCtx.stroke();}
+        for(let i=bullets.length-1;i>=0;i--){bullets[i].x+=bullets[i].xv;bullets[i].y+=bullets[i].yv;if(bullets[i].x<0||bullets[i].x>gameCanvas.width||bullets[i].y<0||bullets[i].y>gameCanvas.height){bullets.splice(i,1);continue;}
+        gameCtx.fillStyle='white';gameCtx.beginPath();gameCtx.arc(bullets[i].x,bullets[i].y,2,0,Math.PI*2);gameCtx.fill();}
+        for(let i=asteroids.length-1;i>=0;i--){asteroids[i].x+=asteroids[i].xv;asteroids[i].y+=asteroids[i].yv;if(asteroids[i].x<0-asteroids[i].r){asteroids[i].x=gameCanvas.width+asteroids[i].r;}else if(asteroids[i].x>gameCanvas.width+asteroids[i].r){asteroids[i].x=0-asteroids[i].r;}
+        if(asteroids[i].y<0-asteroids[i].r){asteroids[i].y=gameCanvas.height+asteroids[i].r;}else if(asteroids[i].y>gameCanvas.height+asteroids[i].r){asteroids[i].y=0-asteroids[i].r;}
+        for(let j=bullets.length-1;j>=0;j--){if(Math.hypot(bullets[j].x-asteroids[i].x,bullets[j].y-asteroids[i].y)<asteroids[i].r){asteroids.splice(i,1);bullets.splice(j,1);score+=100;if(asteroids.length==0){for(let k=0;k<5;k++){asteroids.push(newAsteroid());}}break;}}
+        gameCtx.beginPath();gameCtx.arc(asteroids[i].x,asteroids[i].y,asteroids[i].r,0,Math.PI*2);gameCtx.stroke();}
         gameCtx.fillStyle='white';gameCtx.font='20px Fira Code';gameCtx.fillText('Score: '+score,20,30);
         gameLoop=requestAnimationFrame(update);}
 
-        // --- OTHER EASTER EGGS (Console, Matrix, Konami) ---
+        // --- MOBILE SHAKE-TO-TRIGGER MATRIX ---
+        if(isTouchDevice&&window.DeviceMotionEvent){let lastShake=0;let shakeThreshold=15;
+        window.addEventListener('devicemotion',e=>{const now=Date.now();if(now-lastShake>5000){const accel=e.accelerationIncludingGravity;const magnitude=Math.sqrt(accel.x*accel.x+accel.y*accel.y+accel.z*accel.z);
+        if(magnitude>shakeThreshold){window.matrix();lastShake=now;}}});}
+
+        // --- OTHER EASTER EGGS (Console, Konami) ---
         const matrixCanvas=document.getElementById('matrix-canvas');const matrixCtx=matrixCanvas.getContext('2d');let matrixInterval;const matrixEffect=()=>{if(matrixInterval)clearInterval(matrixInterval);matrixCanvas.style.display='block';matrixCanvas.width=window.innerWidth;matrixCanvas.height=window.innerHeight;const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}'.split('');const fontSize=14;const columns=matrixCanvas.width/fontSize;const drops=Array(Math.floor(columns)).fill(1);const accentHue=getComputedStyle(document.documentElement).getPropertyValue('--accent-hue');const draw=()=>{matrixCtx.fillStyle='rgba(0, 0, 0, 0.05)';matrixCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);matrixCtx.fillStyle=`hsl(${accentHue}, 98%, 58%)`;matrixCtx.font=`${fontSize}px monospace`;for(let i=0;i<drops.length;i++){const text=letters[Math.floor(Math.random()*letters.length)];matrixCtx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>matrixCanvas.height&&Math.random()>0.975){drops[i]=0;}
         drops[i]++;}};matrixInterval=setInterval(draw,33);const stopEffect=()=>{matrixCanvas.style.display='none';clearInterval(matrixInterval);document.removeEventListener('keydown',stopEffect);document.removeEventListener('click',stopEffect);};setTimeout(()=>{document.addEventListener('keydown',stopEffect);document.addEventListener('click',stopEffect);},500);};
         window.help=()=>{console.table({'skills()':'Lists core competencies.','contact()':'Displays my business email.','matrix()':'Initialize visual overlay.','clear()':'Clears the console.'});return"[Available Commands]";};window.skills=()=>{console.log('Offensive Security, Platform Architecture, Incident Response, Entrepreneurship');return"[OK]";};window.contact=()=>{console.log('kbrummitt@spidersecurity.io');return"[OK]";};window.matrix=()=>{console.log('Initializing matrix overlay... Press any key or click to dismiss.');matrixEffect();return'[SUCCESS]';};
