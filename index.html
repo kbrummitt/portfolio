@@ -54,45 +54,6 @@
             pointer-events: none;
         }
 
-        /* --- LOADING ANIMATION STYLES --- */
-        #loader-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: var(--background-color);
-            z-index: 10001;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #loader-container { text-align: center; }
-        #loader-circle {
-            width: 150px; height: 150px;
-            border: 2px solid var(--border-color);
-            border-radius: 50%;
-            margin: auto;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0); }
-        }
-        #loader-text {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Fira Code', monospace;
-            color: var(--secondary-text-color);
-            transition: color 0.3s;
-        }
-        #loader-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease-out;
-        }
-
-
         .container {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -135,14 +96,13 @@
         }
         .hacker-quote .highlight { color: var(--accent-color); font-weight: 500; }
         .planet-icon {
-            font-size: 1.5em;
-            line-height: 1;
-            display: inline-block;
+            width: 1.5em;
+            height: 1.5em;
+            stroke: var(--primary-text-color);
             animation: spin 10s linear infinite;
         }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        /* The rest of the CSS remains unchanged... */
         .nav__list { list-style: none; margin: 3rem 0; }
         .nav__item { margin: 1rem 0; }
         .nav__link { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--secondary-text-color); font-weight: 500; transition: color 0.3s ease; }
@@ -211,20 +171,13 @@
 </head>
 
 <body>
-    <div id="loader-overlay">
-        <div id="loader-container">
-            <div id="loader-circle"></div>
-            <div id="loader-text"></div>
-        </div>
-    </div>
-
     <div class="container">
         <header class="left-column">
             <div class="header-content">
                 <h1 id="main-headline">Kobe Brummitt</h1>
                 <p class="hacker-quote">
                     Hack The <span class="highlight">Planet</span>
-                    <i class='bx bxs-globe planet-icon'></i>
+                    <svg class="planet-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                 </p>
             </div>
 
@@ -434,38 +387,6 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-
-        // --- LOADING ANIMATION ---
-        const loaderOverlay = document.getElementById('loader-overlay');
-        const loaderText = document.getElementById('loader-text');
-        const textSequence = ["Scanning...", "Authenticating...", "Access Granted"];
-        let textIndex = 0;
-        
-        function runLoader() {
-            if (textIndex < textSequence.length) {
-                loaderText.innerText = textSequence[textIndex];
-                if (textIndex === textSequence.length - 1) {
-                    loaderText.style.color = 'hsl(var(--accent-hue), var(--accent-saturation), var(--accent-lightness))';
-                }
-                textIndex++;
-            }
-        }
-        
-        setTimeout(() => {
-            runLoader(); // Scanning...
-            setTimeout(() => {
-                runLoader(); // Authenticating...
-                setTimeout(() => {
-                    runLoader(); // Access Granted
-                    setTimeout(() => {
-                        loaderOverlay.style.opacity = '0';
-                        loaderOverlay.addEventListener('transitionend', () => {
-                            loaderOverlay.style.display = 'none';
-                        }, { once: true });
-                    }, 400);
-                }, 1000);
-            }, 1000);
-        }, 200);
 
         // --- EASTER EGG: CONSOLE MESSAGE ---
         const asciiSpider="             /\\            ( /   @ @    \\ )             \\  _\\_/_  /             /\\ \\ ' / /\\            /  \\     /  \\                \\   /                 '.'        ";console.log(`%c${asciiSpider}`,'color: hsl(var(--accent-hue, 207), 98%, 58%');console.log("%c[Connection Established] Welcome.","color: hsl(var(--accent-hue, 207), 98%, 58%); font-size: 12px;");console.log("%cTry help() for a list of commands.","color: #888888; font-style: italic;");
