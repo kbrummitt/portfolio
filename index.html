@@ -111,9 +111,32 @@
         .nav__link .line { width: 2rem; height: 1px; background-color: var(--secondary-text-color); transition: all 0.3s ease; }
         .nav__link:hover .line { width: 4rem; }
         .nav__link:hover { color: var(--primary-text-color); }
-        .social-links { display: flex; gap: 1.5rem; }
-        .social-links a { font-size: 1.5rem; color: var(--secondary-text-color); transition: color 0.3s ease; }
-        .social-links a:hover { color: var(--accent-color); }
+        .social-links { display: flex; gap: 0.75rem; }
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            font-size: 1.05rem;
+            color: var(--primary-text-color);
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.12s ease;
+            text-decoration: none;
+        }
+        .social-links a i { line-height: 1; }
+        .social-links a:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background: rgba(255,255,255,0.02);
+            transform: translateY(-2px);
+        }
+        .cta-links { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+        .cta-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; border: 1px solid var(--border-color); border-radius: 6px; color: var(--primary-text-color); text-decoration: none; font-family: 'Fira Code', monospace; font-size: 0.9rem; background: rgba(255,255,255,0.02); transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease; }
+        .cta-btn img { height: 18px; width: auto; display: inline-block; }
+        .cta-btn:hover { border-color: var(--accent-color); color: var(--accent-color); background: rgba(255,255,255,0.04); }
         .right-column { grid-column: span 12; padding-top: 2rem; }
         section { margin-bottom: 4rem; }
         .section-title { font-size: 1.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); margin-bottom: 2rem; }
@@ -176,7 +199,7 @@
             <div class="header-content">
                 <h1 id="main-headline">Kobe Brummitt</h1>
                 <p class="hacker-quote">
-                    Hack The <span class="highlight">Planet</span>
+                    <span class="highlight">Hack The Planet</span>
                     <svg class="planet-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                 </p>
             </div>
@@ -191,7 +214,15 @@
             </nav>
 
             <div class="social-links">
-                <a href="mailto:kbrummitt@spidersecurity.io" title="Email"><i class='bx bx-envelope'></i></a>
+                <a href="https://www.linkedin.com/in/kobe-brummitt-9995ab393/" target="_blank" rel="noopener" title="LinkedIn"><i class='bx bxl-linkedin'></i></a>
+                <a href="https://github.com/your-username" target="_blank" rel="noopener" title="GitHub"><i class='bx bxl-github'></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61584501332227" target="_blank" rel="noopener" title="Facebook"><i class='bx bxl-facebook'></i></a>
+                <a href="https://twitter.com/your-profile" target="_blank" rel="noopener" title="X / Twitter"><i class='bx bxl-twitter'></i></a>
+            </div>
+            <div class="cta-links">
+                <a class="cta-btn" href="https://blueridge-us.com" target="_blank" rel="noopener">
+                    <img src="images/logo-mark.png" alt="Blue Ridge Security logo" loading="lazy"> Blue Ridge Security <i class='bx bx-link-external'></i>
+                </a>
             </div>
         </header>
 
@@ -200,20 +231,19 @@
             <section id="about" class="fade-in">
                 <h3 class="section-title">About</h3>
                 <p>
-                   My approach to security is rooted in a simple principle: you cannot defend what you do not fundamentally understand. For me, that understanding comes from deconstructing systems—exploring their limits, identifying their flaws, and tracing the paths an adversary would take. It’s a curiosity that started with hacking school systems for fun and quickly evolved into a competitive and professional obsession.
+                    My approach to security is rooted in a simple principle: you cannot defend what you do not fundamentally understand. For me, that understanding comes from deconstructing systems—exploring their limits, identifying their flaws, and tracing the paths an adversary would take. It’s a curiosity that started with hacking school systems for fun and quickly evolved into a competitive and professional obsession.
                 </p>
                 <p>
-                    This offensive-first mindset is my strategic advantage. It's how I became the youngest Head of Cybersecurity in a county's history just a year after graduating. It's the foundation upon which I architected a proprietary AI-driven threat platform, and it is the core philosophy of my own offensive security firm, <strong>Spider Security</strong>.
+                    This offensive-first mindset is my strategic advantage. It's how I became the youngest Head of Cybersecurity in a county's history just a year after graduating. It's the foundation upon which I architected a proprietary AI-driven threat platform, and it is the core philosophy of my own offensive security firm, Blue Ridge Security.
                 </p>
-                <div class="about-highlights">
-                    <ul>
-                        <li><i class='bx bxs-zap'></i><span>Youngest Head of Cybersecurity in county history.</span></li>
-                        <li><i class='bx bxs-trophy'></i><span>Placed Top 10 Globally in SECARMYCTF competition.</span></li>
-                        <li><i class='bx bx-dollar-circle'></i><span>Generated over $5M in revenue from 25 e-commerce ventures.</span></li>
-                        <li><i class='bx bxs-shield-x'></i><span>Neutralized a major ransomware attack in under 1 hour.</span></li>
-                    </ul>
-                </div>
-            </section>
+                 <div class="about-highlights">
+                     <ul>
+                        <li><i class='bx bxs-award'></i><span>Youngest Head of Cybersecurity in county history.</span></li>
+                        <li><i class='bx bxs-trophy'></i><span>Placed Top 10 globally in SECARMYCTF.</span></li>
+                        <li><i class='bx bxs-shield'></i><span>Neutralized a major ransomware attack in under 1 hour.</span></li>
+                     </ul>
+                 </div>
+             </section>
 
             <section id="experience" class="fade-in">
                 <h3 class="section-title">Experience</h3>
@@ -221,7 +251,7 @@
                     <div class="exp-date">JUNE 2025 — PRESENT</div>
                     <div class="exp-content">
                         <h4 class="exp-title">Founder & Principal Security Consultant</h4>
-                        <h5 class="exp-company">Spider Security</h5>
+                        <h5 class="exp-company">Blue Ridge Security</h5>
                         <p class="exp-description">
                            Launched my own offensive security consultancy to provide specialized red and blue team services, including penetration testing and vulnerability assessments. We help organizations identify and remediate critical weaknesses before adversaries can exploit them.
                         </p>
@@ -231,15 +261,15 @@
                             <span class="tag">Blue Teaming</span>
                             <span class="tag">Security Audits</span>
                         </div>
-                    </div>
-                </div>
+                     </div>
+                 </div>
                  <div class="experience-item">
                     <div class="exp-date">JAN 2025 — PRESENT</div>
                     <div class="exp-content">
                         <h4 class="exp-title">Cybersecurity Engineer</h4>
                         <h5 class="exp-company">Confidential</h5>
                         <p class="exp-description">
-                            Recruited to architect and develop a proprietary, in-house threat intelligence platform. As the sole developer, I built a unified SIEM/XDR/NDR solution from the ground up, integrating AI to provide actionable insights and reduce alert fatigue for security teams.
+                            Recruited by a confidential MSP to architect and develop a proprietary, in-house threat intelligence platform. As the sole developer, I built a unified SIEM/XDR/NDR solution from the ground up, integrating AI to provide actionable insights and reduce alert fatigue for security teams.
                         </p>
                         <div class="exp-tags">
                             <span class="tag">SIEM/XDR Architecture</span>
@@ -250,12 +280,12 @@
                     </div>
                 </div>
                 <div class="experience-item">
-                    <div class="exp-date">2022 — 2024</div>
+                    <div class="exp-date">2021 — 2024</div>
                     <div class="exp-content">
                         <h4 class="exp-title">Head of Cybersecurity</h4>
                         <h5 class="exp-company">Hawkins County Board of Education</h5>
                         <p class="exp-description">
-                            Promoted from a technician role to lead the entire cybersecurity program for the county. Managed all compliance, blue team defense, and red team engagements. Led the response to a major ransomware attack, recovering over 1,500 mailboxes and preventing catastrophic data loss. Deployed and managed a county-wide Wazuh SIEM and trained thousands of users through over 100,000 simulated phishing emails.
+                            Promoted from a technician role to lead the entire cybersecurity program for the county. Managed all compliance, blue team defense, and red team engagements. Protected the district from cyber threats, handled day-to-day technical operations, and learned the ins and outs of K-12 systems. Managed compliance for the district's cybersecurity insurance program. Trained thousands of users through over 100,000 simulated phishing emails.
                         </p>
                         <div class="exp-tags">
                             <span class="tag">Incident Response</span>
@@ -274,17 +304,17 @@
                         <h4>Offensive Security</h4>
                         <div class="skill-list">
                             <span class="skill-item">Penetration Testing</span>
-                            <span class="skill-item">Red Teaming</span>
-                            <span class="skill-item">Exploit Development</span>
+                            <span class="skill-item">Red Team Operations & Adversary Emulation</span>
+                            <span class="skill-item">Exploit Development (research)</span>
+                            <span class="skill-item">Reverse Engineering & Binary Analysis (defensive)</span>
+                            <span class="skill-item">Malware Analysis (defensive / incident response)</span>
                             <span class="skill-item">Social Engineering</span>
-                            <span class="skill-item">Bug Bounties</span>
-                            <span class="skill-item">Security Bypass</span>
                         </div>
                     </div>
                     <div class="skill-category">
                         <h4>Defensive & Architecture</h4>
                         <div class="skill-list">
-                            <span class="skill-item">SIEM/XDR/NDR Development</span>
+                            <span class="skill-item">SOC Operations & Threat Hunting</span>
                             <span class="skill-item">Incident Response</span>
                             <span class="skill-item">Digital Forensics</span>
                             <span class="skill-item">AI in Threat Detection</span>
@@ -298,9 +328,9 @@
                             <span class="skill-item">Python</span>
                             <span class="skill-item">Metasploit</span>
                             <span class="skill-item">Burp Suite</span>
-                            <span class="skill-item">Cobalt Strike</span>
                             <span class="skill-item">Nmap</span>
                             <span class="skill-item">Wireshark</span>
+                            <span class="skill-item">Hak5 devices (security testing)</span>
                         </div>
                     </div>
                      <div class="skill-category">
@@ -308,7 +338,6 @@
                         <div class="skill-list">
                             <span class="skill-item">Blockchain & NFT Security</span>
                             <span class="skill-item">Forex Trading & Analysis</span>
-                            <span class="skill-item">E-commerce Platforms</span>
                             <span class="skill-item">Product Development</span>
                         </div>
                     </div>
@@ -347,8 +376,8 @@
                     <p class="project-description">Engineered and deployed a custom, hardware-based VPN tunneling solution from scratch to ensure secure, encrypted, and low-latency communication for distributed network environments.</p>
                 </div>
                 <div class="project-card">
-                    <h4 class="project-title"><i class='bx bx-dollar-circle'></i>E-commerce Entrepreneur</h4>
-                    <p class="project-description">Built and scaled a portfolio of 25 independent e-commerce businesses, generating over $5 Million in gross revenue through strategic marketing, automation, and supply chain optimization.</p>
+                    <h4 class="project-title"><i class='bx bx-coin'></i>SeaCoin & Crypto Ventures</h4>
+                    <p class="project-description">Founded SeaCoin — a nonprofit marine wildlife conservation cryptocurrency funding large-scale ocean restoration and protection initiatives. Early adopter of Bitcoin and Ethereum; built and operated multiple custom mining rigs to support crypto projects and deepen technical expertise in blockchain infrastructure.</p>
                 </div>
                 <div class="project-card">
                     <h4 class="project-title"><i class='bx bx-trophy'></i>Global CTF Competitor</h4>
@@ -436,7 +465,7 @@
         // --- OTHER EASTER EGGS (Console, Konami) ---
         const matrixCanvas=document.getElementById('matrix-canvas');const matrixCtx=matrixCanvas.getContext('2d');let matrixInterval;const matrixEffect=()=>{if(matrixInterval)clearInterval(matrixInterval);matrixCanvas.style.display='block';matrixCanvas.width=window.innerWidth;matrixCanvas.height=window.innerHeight;const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}'.split('');const fontSize=14;const columns=matrixCanvas.width/fontSize;const drops=Array(Math.floor(columns)).fill(1);const accentHue=getComputedStyle(document.documentElement).getPropertyValue('--accent-hue');const draw=()=>{matrixCtx.fillStyle='rgba(0, 0, 0, 0.05)';matrixCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);matrixCtx.fillStyle=`hsl(${accentHue}, 98%, 58%)`;matrixCtx.font=`${fontSize}px monospace`;for(let i=0;i<drops.length;i++){const text=letters[Math.floor(Math.random()*letters.length)];matrixCtx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>matrixCanvas.height&&Math.random()>0.975){drops[i]=0;}
         drops[i]++;}};matrixInterval=setInterval(draw,33);const stopEffect=()=>{matrixCanvas.style.display='none';clearInterval(matrixInterval);document.removeEventListener('keydown',stopEffect);document.removeEventListener('click',stopEffect);};setTimeout(()=>{document.addEventListener('keydown',stopEffect);document.addEventListener('click',stopEffect);},500);};
-        window.help=()=>{console.table({'skills()':'Lists core competencies.','contact()':'Displays my business email.','matrix()':'Initialize visual overlay.','clear()':'Clears the console.'});return"[Available Commands]";};window.skills=()=>{console.log('Offensive Security, Platform Architecture, Incident Response, Entrepreneurship');return"[OK]";};window.contact=()=>{console.log('kbrummitt@spidersecurity.io');return"[OK]";};window.matrix=()=>{console.log('Initializing matrix overlay... Press any key or click to dismiss.');matrixEffect();return'[SUCCESS]';};
+        window.help=()=>{console.table({'skills()':'Lists core competencies.','contact()':'Displays my business email.','matrix()':'Initialize visual overlay.','clear()':'Clears the console.'});return"[Available Commands]";};window.skills=()=>{console.log('Guardian SOC, Incident Response/Forensics, Phishing Reduction, Compliance Reporting, Penetration Testing');return"[OK]";};window.contact=()=>{console.log('support@blueridgesecurity.com');return"[OK]";};window.matrix=()=>{console.log('Initializing matrix overlay... Press any key or click to dismiss.');matrixEffect();return'[SUCCESS]';};
         const konamiCode=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let konamiIndex=0;document.addEventListener('keydown',(e)=>{if(e.key.toLowerCase()===konamiCode[konamiIndex].toLowerCase()){konamiIndex++;if(konamiIndex===konamiCode.length){window.matrix();konamiIndex=0;}}else{konamiIndex=0;}});
         
         // --- HUE SLIDER / COLOR CHANGER ---
