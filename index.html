@@ -134,7 +134,9 @@
             transform: translateY(-2px);
         }
         .cta-links { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
-        .cta-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; border: 1px solid var(--border-color); border-radius: 6px; color: var(--primary-text-color); text-decoration: none; font-family: 'Fira Code', monospace; font-size: 0.9rem; background: rgba(255,255,255,0.02); transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease; }
+        .cta-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; border: 1px solid var(--border-color); border-radius: 6px; color: var(--primary-text-color); text-decoration: none; font-family: 'Fira Code', monospace; font-size: 0.9rem; background: rgba(255,255,255,0.02); transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease; cursor: pointer; }
+        .cta-btn i { font-size: 1rem; }
+        button.cta-btn { background: rgba(255,255,255,0.02); color: var(--primary-text-color); border: 1px solid var(--border-color); }
         .cta-btn img { height: 18px; width: auto; display: inline-block; }
         .cta-btn:hover { border-color: var(--accent-color); color: var(--accent-color); background: rgba(255,255,255,0.04); }
         .right-column { grid-column: span 12; padding-top: 2rem; }
@@ -223,6 +225,7 @@
                 <a class="cta-btn" href="https://blueridge-us.com" target="_blank" rel="noopener">
                     <img src="images/base.png" alt="Blue Ridge Security logo" loading="lazy"> Blue Ridge Security <i class='bx bx-link-external'></i>
                 </a>
+                <button type="button" class="cta-btn" id="add-contact-btn">Add Me As A Contact <i class='bx bx-download'></i></button>
             </div>
         </header>
 
@@ -416,6 +419,49 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+        // --- CONTACT CARD DOWNLOAD ---
+        const contactBtn = document.getElementById('add-contact-btn');
+        if (contactBtn) {
+            contactBtn.addEventListener('click', () => {
+                const vcardLines = [
+                    'BEGIN:VCARD',
+                    'VERSION:3.0',
+                    'N:Brummitt;Kobe;;;',
+                    'FN:Kobe Brummitt',
+                    'ORG:Blue Ridge Security Solutions',
+                    'TITLE:Founder and CEO',
+                    'TEL;TYPE=CELL,VOICE:+1-423-717-9259',
+                    'TEL;TYPE=WORK,VOICE:+1-423-717-9259',
+                    'URL:https://blueridge-us.com',
+                    'END:VCARD'
+                ];
+                const vcardContent = vcardLines.join('\r\n');
+                const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(blob, 'Kobe-Brummitt.vcf');
+                    return;
+                }
+                const downloadUrl = URL.createObjectURL(blob);
+                const isAppleMobile = /iP(ad|hone|od)/i.test(window.navigator.userAgent || '');
+                if (isAppleMobile) {
+                    window.location.href = downloadUrl;
+                    setTimeout(() => URL.revokeObjectURL(downloadUrl), 4000);
+                    return;
+                }
+                const tempLink = document.createElement('a');
+                tempLink.href = downloadUrl;
+                tempLink.download = 'Kobe-Brummitt.vcf';
+                tempLink.rel = 'noopener';
+                tempLink.style.display = 'none';
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                setTimeout(() => {
+                    document.body.removeChild(tempLink);
+                    URL.revokeObjectURL(downloadUrl);
+                }, 0);
+            });
+        }
 
         // --- EASTER EGG: CONSOLE MESSAGE ---
         const asciiSpider="             /\\            ( /   @ @    \\ )             \\  _\\_/_  /             /\\ \\ ' / /\\            /  \\     /  \\                \\   /                 '.'        ";console.log(`%c${asciiSpider}`,'color: hsl(var(--accent-hue, 207), 98%, 58%');console.log("%c[Connection Established] Welcome.","color: hsl(var(--accent-hue, 207), 98%, 58%); font-size: 12px;");console.log("%cTry help() for a list of commands.","color: #888888; font-style: italic;");
